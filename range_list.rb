@@ -1,4 +1,5 @@
 require 'byebug'
+require './validate/validate_add_params'
 class RangeList
   attr_accessor :implement
 
@@ -7,13 +8,8 @@ class RangeList
   end
 
   def add(range)
-    unless range.is_a?(Array)
-      return raise "Type error This method need Array params"
-    end
-    if range.size <= 1 || range.size >= 3
-      raise "Size error params size only <= 2"
-    end
-    byebug
+    ::Validate::ValidateAddParams.new(range).execute
+
   # TODO
   end
 
