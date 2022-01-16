@@ -1,12 +1,21 @@
 require 'byebug'
 require './validate/validate_add_params'
 class RangeList
-
   attr_reader :implements, :range_lists_string
 
   def initialize(implement = [])
     @implements = implement
     @range_lists_string = ""
+  end
+
+  def indexs(index)
+    implements[index]
+  end
+
+  ['size', 'length'].each do |name|
+    define_method "range_#{name}" do
+      implements.size
+    end
   end
 
   def add(range)
@@ -20,10 +29,6 @@ class RangeList
 
   def print
     p format_range_lists
-  end
-
-  def indexs(index)
-    implements[index]
   end
 
   private
