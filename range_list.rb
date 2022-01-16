@@ -9,7 +9,6 @@ class RangeList
     @range_lists_string = ""
   end
 
-  # key_* 0, 1, 2, 3, ++ ....
   def add(range)
     ::Validate::ValidateAddParams.new(range).execute
     if implements.empty?
