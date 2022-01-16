@@ -77,7 +77,7 @@ class RangeListTest < Test::Unit::TestCase
     assert_equal(1, rl.range_size)
     assert_equal("[ 1, 5 ) ", rl.print)
 
-    rl.add([10, 20])s
+    rl.add([10, 20])
     assert_equal(2, rl.range_size)
     assert_equal("[ 1, 5 ) [ 10, 20 ) ", rl.print)
 
