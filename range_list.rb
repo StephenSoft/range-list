@@ -11,11 +11,7 @@ class RangeList
 
   def add(range)
     ::Validate::ValidateAddParams.new(range).execute
-    if implements.empty?
-      implements << range
-    else
-      compara_and_build_new(range)
-    end
+    compara_and_build_new(range)
   end
 
   def remove
@@ -35,23 +31,37 @@ class RangeList
   attr_writer :implements, :range_lists_string
 
   def compara_and_build_new(range)
-    implements.each_with_index do |implement, index|
-      if compara_code(range, implement) == -1
-        implements << range
-        next
-      end
+    update_ranges = range
+    implements_ranges = []
+    rest_ranges = []
+    return implements << update_ranges if implements.empty?
 
-      if compara_code(range, implement) == 0
-        update_implements_with_index(range, index)
+    implements.each_with_index do |implement, index|
+      compara_code = compara_code(range, implement)
+      case compara_code
+      when -1
+        implements_ranges << implement
         next
+      when 0
+        update_ranges = update_implements_with_index(range, index)
+        next
+      when 1
+        rest_ranges = implements.delete_at(index)
+        break
       end
     end
+
+    implements_ranges << update_ranges
+    implements_ranges << rest_ranges
+    implements_ranges.delete_if { |item| item.empty? }
+
+    @implements = implements_ranges
   end
 
   def update_implements_with_index(item, index)
     new_items_first = [implements[index].first, item.first].min
     new_items_last = [implements[index].last, item.last].max
-    implements[index] = [new_items_first, new_items_last]
+    [new_items_first, new_items_last]
   end
 
   def compara_code(range, implement)
