@@ -23,8 +23,9 @@ class RangeList
     compara_and_build_new(range)
   end
 
-  def remove
-    # TODO: Add remove logic
+  def remove(range)
+    ::Validate::ValidateAddParams.new(range).execute
+    # compara_and_remove(range)
   end
 
   def print
@@ -61,6 +62,7 @@ class RangeList
     implements_ranges.delete_if { |item| item.empty? }
 
     @implements = implements_ranges
+    @range_lists_string = ""
   end
 
   def update_implements_with_index(item, index)
@@ -76,7 +78,7 @@ class RangeList
   end
 
   def format_range_lists
-    implements.each do |implement|
+    @implements.each do |implement|
       range_lists_string << "[ #{implement.first}, #{implement.last} ) "
     end
 
