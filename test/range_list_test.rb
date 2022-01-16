@@ -92,4 +92,50 @@ class RangeListTest < Test::Unit::TestCase
     assert_equal(3, rl.range_size)
     assert_equal("[ 1, 7 ) [ 10, 20 ) [ 25, 30 ) ", rl.print)
   end
+
+  test " add [1,8], [10,21] and remove [10,11]" do
+    rl = RangeList.new
+    rl.add([1, 8])
+    rl.add([10, 21])
+    assert_equal(2, rl.range_size)
+
+    rl.remove([10, 11])
+    assert_equal(2, rl.range_size)
+    assert_equal("[ 1, 8 ) [ 11, 21 ) ", rl.print)
+  end
+
+  test " add [1,8], [10,21] and remove [10,11], [15,17]" do
+    rl = RangeList.new
+    rl.add([1, 8])
+    rl.add([10, 21])
+    assert_equal(2, rl.range_size)
+
+    rl.remove([10, 11])
+    assert_equal(2, rl.range_size)
+    assert_equal("[ 1, 8 ) [ 11, 21 ) ", rl.print)
+
+    rl.remove([15, 17])
+    assert_equal(3, rl.range_size)
+    assert_equal("[ 1, 8 ) [ 11, 15 ) [ 17, 21 ) ", rl.print)
+  end
+
+  test " add [1,8], [10,21] and remove [10,11], [15,17] [3, 19]" do
+    rl = RangeList.new
+    rl.add([1, 8])
+    rl.add([10, 21])
+    assert_equal(2, rl.range_size)
+
+    rl.remove([10, 11])
+    assert_equal(2, rl.range_size)
+    assert_equal("[ 1, 8 ) [ 11, 21 ) ", rl.print)
+
+
+    rl.remove([15, 17])
+    assert_equal(3, rl.range_size)
+    assert_equal("[ 1, 8 ) [ 11, 15 ) [ 17, 21 ) ", rl.print)
+
+    rl.remove([3, 19])
+    assert_equal(2, rl.range_size)
+    assert_equal("[ 1, 3 ) [ 19, 21 ) ", rl.print)
+  end
 end

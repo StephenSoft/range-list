@@ -25,7 +25,7 @@ class RangeList
 
   def remove(range)
     ::Validate::ValidateAddParams.new(range).execute
-    # compara_and_remove(range)
+    compara_and_remove(range)
   end
 
   def print
@@ -35,6 +35,48 @@ class RangeList
   private
 
   attr_writer :implements, :range_lists_string
+
+  def compara_and_remove(range)
+    return if range_size.zero?
+
+    update_ranges = range
+    implements_ranges = []
+    rest_ranges = []
+
+    @implements.each_with_index do |implement, index|
+      compara_code = compara_code(range, implement)
+      case compara_code
+      when -1
+        implements_ranges << implement
+        next
+      when 0
+        results = check_and_build_ranges(implement, range)
+        results.each { |result| implements_ranges << result }
+        next
+      when 1
+        rest_ranges = implements.delete_at(index)
+        break
+      end
+    end
+
+    implements_ranges << rest_ranges
+    implements_ranges.delete_if { |item| item.empty? }
+
+    @implements = implements_ranges
+    @range_lists_string = ""
+  end
+
+  def check_and_build_ranges(implement, range)
+    result = []
+    if range.first.to_i > implement.first.to_i
+      result << [implement.first, range.first]
+    end
+
+    if implement.last.to_i > range.last.to_i
+      result << [range.last, implement.last]
+    end
+    result
+  end
 
   def compara_and_build_new(range)
     update_ranges = range
@@ -49,7 +91,7 @@ class RangeList
         implements_ranges << implement
         next
       when 0
-        update_ranges = update_implements_with_index(range, index)
+        update_ranges = build_item_with_index(range, index)
         next
       when 1
         rest_ranges = implements.delete_at(index)
@@ -65,7 +107,7 @@ class RangeList
     @range_lists_string = ""
   end
 
-  def update_implements_with_index(item, index)
+  def build_item_with_index(item, index)
     new_items_first = [implements[index].first, item.first].min
     new_items_last = [implements[index].last, item.last].max
     [new_items_first, new_items_last]
